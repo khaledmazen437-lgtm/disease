@@ -1,0 +1,163 @@
+// Prisma Schema for MHD Autism Rehabilitation Platform
+// Designed for MySQL with Relational Integrity
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  PARENT
+  DOCTOR
+  ADMIN
+}
+
+enum ActivityCategory {
+  EMOTIONAL_BEHAVIORAL    // المهارات السلوكية والانفعالية
+  SENSORY_INTEGRATION     // التكامل الحسي والتركيز
+  DAILY_ROUTINE           // الروتين والاستقلالية اليومية
+  SPEECH_COMMUNICATION    // التواصل والنطق واللغة
+  SOCIAL_INTERACTION      // المهارات الاجتماعية والتفاعل
+}
+
+enum DifficultyLevel {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+}
+
+enum SensoryLevel {
+  LOW_SOOTHING    // منخفض مهدئ
+  BALANCED        // معتدل
+  DYNAMIC         // ديناميكي
+}
+
+// 1. Users Model (الأهالي، الأطباء، المشرفون)
+model User {
+  id            String         @id @default(uuid())
+  email         String         @unique
+  passwordHash  String
+  fullName      String
+  phoneNumber   String?
+  role          Role           @default(PARENT)
+  avatarUrl     String?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  // Relationships
+  children      ChildProfile[]
+  doctorProfile DoctorProfile?
+  forumPosts    ForumPost[]
+  comments      ForumComment[]
+}
+
+// 2. Child Profile Model (ملف الطفل وتفضيلاته الحسية)
+model ChildProfile {
+  id                 String                  @id @default(uuid())
+  parentId           String
+  name               String
+  birthDate          DateTime
+  gender             String?
+  autismSpectrumRank String?                 // مثلا: خفيف، متوسط، عالي الأداء
+  soundSensitivity   Boolean                 @default(false)
+  favoriteColorTheme String?                 @default("cream")
+  avatarEmoji        String?                 @default("🌟")
+  earnedStars        Int                     @default(0)
+  createdAt          DateTime                @default(now())
+  updatedAt          DateTime                @updatedAt
+
+  // Relationships
+  parent             User                    @relation(fields: [parentId], references: [id], onDelete: Cascade)
+  activityRecords    ChildActivityProgress[]
+  assignedDoctorId   String?
+  assignedDoctor     DoctorProfile?          @relation(fields: [assignedDoctorId], references: [id])
+}
+
+// 3. Activity Model (الأنشطة والتدريبات التأهيلية)
+model Activity {
+  id               String                  @id @default(uuid())
+  title            String                  // عنوان النشاط
+  slug             String                  @unique
+  category         ActivityCategory        // الفئة المعمارية
+  description      String                  @db.Text
+  iconEmoji        String                  @default("🎮")
+  difficulty       DifficultyLevel         @default(BEGINNER)
+  sensoryLevel     SensoryLevel            @default(LOW_SOOTHING)
+  estimatedMinutes Int                     @default(5)
+  interactiveData  Json?                   // محتوى النشاط وأسئلته وبياناته
+  isActive         Boolean                 @default(true)
+  createdAt        DateTime                @default(now())
+  updatedAt        DateTime                @updatedAt
+
+  // Relationships
+  progressLogs     ChildActivityProgress[]
+}
+
+// 4. Progress & Analytics Model (سجلات تقدم الطفل)
+model ChildActivityProgress {
+  id               String       @id @default(uuid())
+  childId          String
+  activityId       String
+  accuracyScore    Float        // نسبة الدقة من 100
+  durationSeconds  Int          // مدة الجلسة بالثواني
+  attemptsCount    Int          @default(1)
+  starsEarned      Int          @default(1)
+  behaviorNotes    String?      @db.Text
+  completedAt      DateTime     @default(now())
+
+  // Relationships
+  child            ChildProfile @relation(fields: [childId], references: [id], onDelete: Cascade)
+  activity         Activity     @relation(fields: [activityId], references: [id], onDelete: Cascade)
+}
+
+// 5. Doctor Profile & Consultations (المرحلة الثالثة)
+model DoctorProfile {
+  id               String         @id @default(uuid())
+  userId           String         @unique
+  specialtyTitle   String
+  yearsExperience  Int            @default(1)
+  bio              String?        @db.Text
+  licenseNumber    String?
+  hourlyRate       Decimal?       @db.Decimal(10, 2)
+  user             User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  assignedChildren ChildProfile[]
+  appointments     Appointment[]
+}
+
+model Appointment {
+  id               String         @id @default(uuid())
+  doctorId         String
+  parentName       String
+  childName        String
+  scheduledAt      DateTime
+  status           String         @default("PENDING") // PENDING, CONFIRMED, COMPLETED
+  videoRoomUrl     String?
+  doctor           DoctorProfile  @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+}
+
+// 6. Community & Articles (المرحلة الثانية)
+model ForumPost {
+  id        String         @id @default(uuid())
+  authorId  String
+  title     String
+  content   String         @db.Text
+  category  String
+  likes     Int            @default(0)
+  createdAt DateTime       @default(now())
+  author    User           @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  comments  ForumComment[]
+}
+
+model ForumComment {
+  id        String    @id @default(uuid())
+  postId    String
+  authorId  String
+  content   String    @db.Text
+  createdAt DateTime  @default(now())
+  post      ForumPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+  author    User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
+}

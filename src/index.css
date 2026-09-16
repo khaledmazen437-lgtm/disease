@@ -1,0 +1,95 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    background-color: #FAF7F2;
+    color: #443B32;
+    overflow-x: hidden;
+  }
+
+  /* Custom Smooth Scrollbar with Burgundy accent */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #F5EFEB;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #CBBBA8;
+    border-radius: 4px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #8E1833;
+  }
+}
+
+/* Sensory Calm Mode & High Contrast */
+.calm-mode {
+  filter: contrast(0.95) saturate(0.85);
+}
+
+.high-contrast {
+  filter: contrast(1.15);
+}
+
+/* Soft Glass effect with Cream & Burgundy tones */
+.glass-cream {
+  background: rgba(253, 251, 247, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(235, 226, 216, 0.7);
+}
+
+.glass-burgundy {
+  background: rgba(117, 23, 44, 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(176, 34, 66, 0.3);
+}
+
+/* 3D Tactile Buttons & Cards Utilities */
+@layer components {
+  /* Dribbble SaaS Primary Burgundy Pill Button */
+  .btn-dribbble-primary {
+    @apply relative px-8 py-3.5 rounded-2xl bg-gradient-to-r from-burgundy-900 via-purple-950 to-burgundy-950 text-white font-extrabold text-base tracking-wide border border-purple-400/30 shadow-lg transition-all duration-300 hover:shadow-burgundy-900/40 hover:border-purple-300/60 active:scale-95 flex items-center justify-center gap-3 cursor-pointer overflow-hidden select-none;
+  }
+
+  /* Dribbble SaaS Gold/Amber CTA Button */
+  .btn-dribbble-amber {
+    @apply relative px-8 py-3.5 rounded-2xl bg-gradient-to-r from-amber-500 via-amber-400 to-amber-500 text-burgundy-950 font-black text-base tracking-wide border border-amber-300/60 shadow-lg shadow-amber-500/20 transition-all duration-300 hover:shadow-amber-500/40 hover:scale-[1.03] active:scale-95 flex items-center justify-center gap-3 cursor-pointer overflow-hidden select-none;
+  }
+
+  /* Dribbble SaaS Glassmorphic Light Button */
+  .btn-dribbble-glass {
+    @apply relative px-6 py-3 rounded-2xl bg-white/80 hover:bg-white backdrop-blur-xl border border-cream-300 text-burgundy-950 font-bold text-sm shadow-soft hover:shadow-md transition-all duration-300 hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-2 cursor-pointer select-none;
+  }
+
+  /* 3D Physical Push Buttons (Tactile Depth Press) */
+  .btn-3d-primary {
+    @apply relative px-8 py-3.5 rounded-2xl bg-gradient-to-b from-burgundy-800 to-burgundy-950 text-white font-black text-base border-t border-burgundy-400/40 border-b-[5px] border-b-burgundy-950 shadow-xl transition-all duration-150 active:translate-y-[3px] active:border-b-[2px] active:shadow-md flex items-center justify-center gap-2 cursor-pointer select-none;
+  }
+
+  .btn-3d-amber {
+    @apply relative px-8 py-3.5 rounded-2xl bg-gradient-to-b from-amber-400 to-amber-600 text-burgundy-950 font-black text-base border-t border-amber-200 border-b-[5px] border-b-amber-800 shadow-xl transition-all duration-150 active:translate-y-[3px] active:border-b-[2px] active:shadow-md flex items-center justify-center gap-2 cursor-pointer select-none;
+  }
+
+  /* 3D Card Depth Tilt & Glare Effect */
+  .card-3d-tilt {
+    @apply transition-all duration-300 transform-gpu hover:-translate-y-2 hover:shadow-2xl hover:border-burgundy-300 border border-cream-300/90 rounded-[2.2rem] bg-white/90 backdrop-blur-xl relative overflow-hidden;
+    box-shadow: 0 10px 30px -10px rgba(68, 59, 50, 0.08), 0 20px 25px -5px rgba(0, 0, 0, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  }
+
+  /* 3D Glass Bubble Visual Element */
+  .bubble-3d {
+    background: radial-gradient(circle at 35% 35%, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.4) 25%, rgba(147, 51, 234, 0.3) 60%, rgba(99, 102, 241, 0.6) 100%);
+    box-shadow: inset -5px -5px 15px rgba(0, 0, 0, 0.15), 0 12px 25px rgba(120, 40, 200, 0.25);
+    backdrop-filter: blur(4px);
+  }
+
+  /* 3D Tactile Ring Torus Styling */
+  .ring-3d-glow {
+    box-shadow: inset 0 3px 6px rgba(255, 255, 255, 0.8), inset 0 -4px 8px rgba(0, 0, 0, 0.3), 0 8px 20px rgba(0, 0, 0, 0.25);
+  }
+}
