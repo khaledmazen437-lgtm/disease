@@ -103,3 +103,6 @@ dist-ssr/
 # OS temp files
 .DS_Store
 Thumbs.db
+
+# Local Netlify folder
+.netlify
